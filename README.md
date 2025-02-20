@@ -96,3 +96,57 @@ run this:
 ```
 mongosh --file createUsers.js
 ```
+
+### Script to Drop All Collections in a Database
+
+```
+// Switch to the target database
+const userDB = db.getSiblingDB("userDatabase");
+
+// Retrieve all collection names and drop each one
+userDB.getCollectionNames().forEach(function(collectionName) {
+  print("Dropping collection: " + collectionName);
+  userDB.getCollection(collectionName).drop();
+});
+```
+
+run this command:
+```
+mongosh --file dropCollections.js
+```
+
+### How to drop all the tables from particular 10 users from one database
+
+```
+// Specify the target database
+const dbName = "myDatabase";
+const targetDB = db.getSiblingDB(dbName);
+
+// List of 10 usernames whose collections you want to drop.
+// Adjust these names according to your naming convention.
+const users = [
+  "user1", "user2", "user3", "user4", "user5",
+  "user6", "user7", "user8", "user9", "user10"
+];
+
+// Get all collection names in the database
+const collections = targetDB.getCollectionNames();
+
+collections.forEach(function(collName) {
+  // Check if the collection name starts with any of the user names followed by an underscore.
+  for (let i = 0; i < users.length; i++) {
+    if (collName.startsWith(users[i] + "_")) {
+      print("Dropping collection: " + collName);
+      targetDB.getCollection(collName).drop();
+      // Once dropped, break out of the inner loop
+      break;
+    }
+  }
+});
+```
+
+Run this command:
+
+```
+mongosh --file dropUserCollections.js
+```
