@@ -73,32 +73,26 @@ You're all set! Let me know if you run into any issues.
 
 # Create Multiple Databases and Users with a Script
 
-You can achieve this by running a JavaScript loop inside the MongoDB shell (mongosh). Here’s an example script that creates 10 databases and a corresponding user for each one:
-
 ```
+// Specify the target database name
+const dbName = "myDatabase";
+// Switch to the target database
+const targetDB = db.getSiblingDB(dbName);
+
 for (let i = 1; i <= 10; i++) {
-  const dbName = "database" + i;
-  const userName = "user" + i;
-  const password = "password" + i;
-  // Switch context to the new database
-  let currentDB = db.getSiblingDB(dbName);
-  // Create a user for this database with readWrite privileges
-  currentDB.createUser({
-    user: userName,
+  const username = "user" + i;
+  const password = "password" + i;  // Customize passwords as needed
+  targetDB.createUser({
+    user: username,
     pwd: password,
     roles: [{ role: "readWrite", db: dbName }]
   });
+  print("Created user: " + username);
 }
 ```
 
-# How to Run This Script
-
-### 1. Save the Script:
-Save the above code in a file, for example, `createUsersAndDBs.js`.
-
-### 2. Run the Script Using mongosh:
-Open your terminal and run:
+run this:
 
 ```
-mongosh createUsersAndDBs.js
+mongosh --file createUsers.js
 ```
